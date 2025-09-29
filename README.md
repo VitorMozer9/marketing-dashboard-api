@@ -15,8 +15,8 @@ Siga os passos abaixo para executar a aplicação em seu ambiente local.
 
 1.  **Clone o repositório:**
     ```bash
-    git clone <URL_DO_SEU_REPOSITORIO>
-    cd <NOME_DO_SEU_REPOSITORIO>
+    git clone <https://github.com/VitorMozer9/marketing-dashboard-api.git>
+    cd <https://github.com/VitorMozer9/marketing-dashboard-api.git>
     ```
 
 2.  **Crie o arquivo de ambiente (`.env`):**
