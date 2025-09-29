@@ -2,8 +2,8 @@ from functools import wraps
 from flask import request, jsonify, g
 from src.utils.jwt_utils import decode_token
 
-def auth_required(f):
-    @wraps(f)
+def auth_required(view_function):
+    @wraps(view_function)
     def wrapper(*args, **kwargs):
         auth_header = request.headers.get("Authorization", "")
         if not auth_header.startswith("Bearer "):
@@ -15,5 +15,5 @@ def auth_required(f):
             return jsonify({"message": "invalid token", "detail": str(exc)}), 401
 
         g.user = payload
-        return f(*args, **kwargs)
+        return view_function(*args, **kwargs)
     return wrapper

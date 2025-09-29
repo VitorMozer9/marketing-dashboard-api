@@ -9,9 +9,9 @@ metrics_service = MetricsService()
 def parse_date_qs(value: str):
     if not value:
         return None
-    for fmt in ("%Y-%m-%d", "%d/%m/%Y"):
+    for date_format in ("%Y-%m-%d", "%d/%m/%Y"):
         try:
-            return datetime.strptime(value, fmt)
+            return datetime.strptime(value, date_format)
         except Exception:
             pass
     return None
@@ -19,16 +19,16 @@ def parse_date_qs(value: str):
 @bp.route("", methods=["GET"])
 @auth_required
 def list_metrics():
-    q = request.args
-    start_date = parse_date_qs(q.get("start_date"))
-    end_date = parse_date_qs(q.get("end_date"))
-    sort_by = q.get("sort_by")
-    order = q.get("order", "asc")
-    page = int(q.get("page", 1))
-    per_page = int(q.get("per_page", 100))
+    query_params = request.args
+    start_date = parse_date_qs(query_params.get("start_date"))
+    end_date = parse_date_qs(query_params.get("end_date"))
+    sort_by = query_params.get("sort_by")
+    order = query_params.get("order", "asc")
+    page = int(query_params.get("page", 1))
+    per_page = int(query_params.get("per_page", 100))
 
     try:
-        metrics = metrics_service.list_metrics(
+        metric_list = metrics_service.list_metrics(
             start_date=start_date,
             end_date=end_date,
             sort_by=sort_by,
@@ -43,5 +43,5 @@ def list_metrics():
     role = user_payload.get("role", "user")
     include_cost = (role.lower() == "admin")
 
-    data = [m.to_dict(include_cost=include_cost) for m in metrics]
+    data = [metric .to_dict(include_cost=include_cost) for metric  in metric_list]
     return jsonify({"items": data, "count": len(data)})

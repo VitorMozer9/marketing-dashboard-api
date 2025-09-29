@@ -39,12 +39,12 @@ def parse_date(value):
 
 def load_metrics_from_csv(path: str = None) -> List[Metric]:
     path = path or config.METRICS_CSV_PATH
-    metrics = []
+    metric_list = []
     with open(path, newline="", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         for row in reader:
             date = parse_date(row.get("date", "")) or parse_date(row.get("day", ""))
-            metrics.append(Metric(
+            metric_list.append(Metric(
                 account_id=row.get("account_id") or row.get("account", ""),
                 campaign_id=row.get("campaign_id", ""),
                 cost_micros=parse_int(row.get("cost_micros", "")),
@@ -54,4 +54,4 @@ def load_metrics_from_csv(path: str = None) -> List[Metric]:
                 interactions=parse_int(row.get("interactions", "")),
                 date=date
             ))
-    return [m for m in metrics if m.date is not None]
+    return [metric for metric in metric_list if metric.date is not None]
