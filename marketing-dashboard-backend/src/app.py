@@ -2,6 +2,7 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 from src.routes.auth_routes import bp as auth_bp
 from src.routes.metrics_routes import bp as metrics_bp
+from src import config
 
 def create_app():
     app = Flask(__name__)
@@ -21,4 +22,4 @@ def create_app():
 
 if __name__ == "__main__":
     app = create_app()
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=config.PORT, debug=True)
