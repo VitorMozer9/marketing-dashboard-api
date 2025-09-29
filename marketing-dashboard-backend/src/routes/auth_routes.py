@@ -9,19 +9,21 @@ auth_service = AuthService()
 @bp.route("/login", methods=["POST"])
 def login():
     data = request.get_json() or {}
-    email = data.get("email", "")
+    username = data.get("username", "")
     password = data.get("password", "")
-    if not email or not password:
-        return jsonify({"message": "email and password are required"}), 400
+    if not username or not password:
+        return jsonify({"message": "username and password are required"}), 400
 
-    user = auth_service.authenticate(email=email, password=password)
+    user = auth_service.authenticate(username=username, password=password)
     if not user:
         return jsonify({"message": "invalid credentials"}), 401
 
     token_payload = {
         "user_id": user.id,
-        "email": user.email,
+        "username": user.username,
         "role": user.role
     }
     token = create_token(token_payload)
-    return jsonify({"access_token": token, "token_type": "bearer"})
+
+    return jsonify({"access_token": token, "token_type": "bearer", "role": user.role})
+

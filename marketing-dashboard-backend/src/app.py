@@ -1,9 +1,11 @@
 from flask import Flask, jsonify
+from flask_cors import CORS
 from src.routes.auth_routes import bp as auth_bp
 from src.routes.metrics_routes import bp as metrics_bp
 
 def create_app():
     app = Flask(__name__)
+    CORS(app)
     app.register_blueprint(auth_bp)
     app.register_blueprint(metrics_bp)
 

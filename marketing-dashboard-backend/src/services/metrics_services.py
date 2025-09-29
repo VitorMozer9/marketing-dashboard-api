@@ -19,9 +19,9 @@ class MetricsService:
         results = self._metrics
 
         if start_date:
-            results = [m for m in results if m.date >= start_date]
+            results = [m for m in results if m.date.date() >= start_date.date()]
         if end_date:
-            results = [m for m in results if m.date <= end_date]
+            results = [m for m in results if m.date.date() <= end_date.date()]
 
         if sort_by:
             valid_sort_fields = {
@@ -38,7 +38,7 @@ class MetricsService:
                 raise ValueError(f"invalid sort_by: {sort_by}")
 
             results.sort(
-                key=lambda m: getattr(m, sort_by),
+                key=lambda m: (getattr(m, sort_by) is None, getattr(m, sort_by)),
                 reverse=(order == "desc")
             )
 

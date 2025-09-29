@@ -14,28 +14,34 @@ def load_users_from_csv(path: str = None) -> List[Users]:
         for row in reader:
             users.append(Users(
                 id=row.get("id") or row.get("user_id") or "",
-                email=row.get("email", "").strip(),
+                username=row.get("username", "").strip(),
                 password=row.get("password", "").strip(),
                 role=row.get("role", "user").strip()
             ))
     return users
 
 
-def parse_int(value):
+def parse_float(value):
     try:
-        return int(value)
-    except Exception:
-        return None
-
+        return float(value)
+    except (ValueError, TypeError): 
+        return 0.0
 
 def parse_date(value):
-    for fmt in ("%Y-%m-%d", "%d/%m/%Y", "%Y/%m/%d"):
-        try:
-            return datetime.strptime(value, fmt)
-        except Exception:
-            continue
-    return None
+    if not value:
+        return None
 
+    clean_value = str(value).strip()
+    if not clean_value:
+        return None
+
+    date_formats = ("%Y-%m-%d", "%d/%m/%Y", "%Y/%m/%d")
+
+    for fmt in date_formats:
+        try:
+            return datetime.strptime(clean_value, fmt)
+        except ValueError:
+            continue
 
 def load_metrics_from_csv(path: str = None) -> List[Metric]:
     path = path or config.METRICS_CSV_PATH
@@ -47,11 +53,11 @@ def load_metrics_from_csv(path: str = None) -> List[Metric]:
             metric_list.append(Metric(
                 account_id=row.get("account_id") or row.get("account", ""),
                 campaign_id=row.get("campaign_id", ""),
-                cost_micros=parse_int(row.get("cost_micros", "")),
-                clicks=parse_int(row.get("clicks", "")),
-                conversions=parse_int(row.get("conversions", "")),
-                impressions=parse_int(row.get("impressions", "")),
-                interactions=parse_int(row.get("interactions", "")),
+                cost_micros=parse_float(row.get("cost_micros", "")),
+                clicks=parse_float(row.get("clicks", "")),
+                conversions=parse_float(row.get("conversions", "")),
+                impressions=parse_float(row.get("impressions", "")),
+                interactions=parse_float(row.get("interactions", "")),
                 date=date
             ))
     return [metric for metric in metric_list if metric.date is not None]
